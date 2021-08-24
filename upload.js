@@ -17,21 +17,3 @@ function previewFile(file) {
   reader.readAsDataURL(file);
 }
 
-
-// <input>でファイルが選択されたときの処理
-const fileInput = document.getElementById('example');
-const handleFileSelect = () => {
-  const files = fileInput.files;
-  for (let i = 0; i < files.length; i++) {
-    previewFile(files[i]);
-  }
-}
-fileInput.addEventListener('change', handleFileSelect);
-// ファイルデータ
-const file = document.getElementById("example").files[0];
-// フォームデータを作成
-const formData = new FormData();
-// avatarというフィールド名でファイルを追加
-formData.append("avatar", file);
-// アップロード
-fetch(送信先のURL, { method: "POST", body: formData });
