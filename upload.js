@@ -1,16 +1,29 @@
-function previewFile(file) {
-  const preview = document.getElementById('preview');
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const imageUrl = e.target.result;
-    const img = document.createElement("img");
-    img.src = imageUrl;
-    preview.appendChild(img);
-  }
+import { Server } from "https://js.sabae.cc/Server.js"; 
+import Alpine from "https://unpkg.com/alpinejs@3.2.3/dist/module.esm.js"
+import { fetchJSON } from "https://ninja03.github.io/denokun/lib/fetchJSON.js"
+import { ImageUploader } from "https://ninja03.github.io/denokun/lib/ImageUploader.js"
 
-  reader.readAsDataURL(file);
-}
-const file = document.getElementById("example").files[0];
-const formData = new FormData();
-formData.append("avatar", file);
-fetch(送信先URL, { method: "POST", body: formData });
+Alpine.data("app", () => ({
+
+  // アップロードするファイルを選んだ
+  fileSelected() {
+  const reader = new FileReader()
+  reader.onload = () => { this.preview = reader.result }
+  reader.readAsDataURL(inputFile.files[0])
+  },
+
+  // アップロードする
+  upload() {
+  const f = inputFile.files[0]
+  let up = new ImageUploader(this.server + "/data/")
+  // 最大幅1200px、最大ファイルサイズ1メガバイト
+  up.setFile(f, 1200, 1024 * 1024)
+  up.onload = async url => {
+    await this.fetchAPI("post", { url })
+    this.up = f.name
+    console.log("「" + this.up + "をアップしました")
+    this.closeUpload()
+    this.reloadTimeline()
+  }
+  }
+}))
